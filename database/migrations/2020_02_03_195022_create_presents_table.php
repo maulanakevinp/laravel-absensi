@@ -17,8 +17,9 @@ class CreatePresentsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->enum('keterangan',['Masuk','Alpha','Telat','Sakit','Cuti']);
-            $table->timestamp('jam_masuk')->nullable();
-            $table->timestamp('jam_keluar')->nullable();
+            $table->date('tanggal');
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_keluar')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });

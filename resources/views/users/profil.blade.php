@@ -36,7 +36,7 @@ Profil - {{ config('app.name') }}
                             <div class="col-sm-2"><label for="nama" class="float-right col-form-label">Nama</label></div>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ Auth::user()->nama }}">
-                                {!! $errors->first('nama', '<span class="invalid-feedback" role="alert">:message</span>') !!}
+                                @error('nama') <span class="invalid-feedback" role="alert">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="form-group row justify-content-end">

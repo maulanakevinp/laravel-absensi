@@ -25,8 +25,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
     Route::post('/logout', 'AuthController@logout')->name('logout');
 
-    Route::resource('/kehadiran', 'PresentsController');
-    Route::get('/kehadiran/cari', 'PresentController@search')->name('kehadiran.cari');
     Route::get('/ganti-password', 'UsersController@gantiPassword')->name('ganti-password');
     Route::patch('/update-password/{user}', 'UsersController@updatePassword')->name('update-password');
     Route::get('/profil', 'UsersController@profil')->name('profil');
@@ -36,6 +34,10 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
         Route::get('/users/cari', 'UsersController@search')->name('users.search');
         Route::patch('/users/password/{user}', 'UsersController@password')->name('users.password');
         Route::resource('/users', 'UsersController');
+        
+        Route::resource('/kehadiran', 'PresentsController');
+        Route::get('/kehadiran/cari', 'PresentController@search')->name('kehadiran.cari');
+        Route::post('/kehadiran/ubah', 'PresentsController@ubah')->name('ajax.get.kehadiran');
     });
 
     Route::group(['roles' => 'Pegawai'], function(){

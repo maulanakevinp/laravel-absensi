@@ -12,8 +12,15 @@ class Present extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'status', 'jam_masuk', 'jam_keluar'
+        'user_id', 'tanggal', 'keterangan', 'jam_masuk', 'jam_keluar'
     ];
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
     public function user()
     {
