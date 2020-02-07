@@ -67,4 +67,9 @@ class User extends Authenticatable
             return $this->checkRole($roles);
         }
     }
+
+    public function presents()
+    {
+        return $this->hasMany('App\Present');
+    }
 }

@@ -67,7 +67,22 @@ Detail User - {{ config('app.name') }}
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        
+                                        @foreach ($user->presents as $present)
+                                            <td>{{ date('d-M-Y', strtotime($present->jam_masuk)) }}</td>
+                                            <td>{{ $present->keterangan }}</td>
+                                            @if ($present->keterangan != 'Alpha')
+                                                <td>{{ date('H:i:s', strtotime($present->jam_masuk)) }}</td>
+                                            @else
+                                                <td>-</td>
+                                            @endif
+                                            @if($present->jam_keluar)
+                                                <td>{{ date('H:i:s', strtotime($present->jam_keluar)) }}</td>
+                                                <td>{{ Carbon::parse($present->jam_masuk)->diffInHours(Carbon::parse($present->jam_keluar)) }}</td>
+                                            @else 
+                                                <td>-</td>
+                                                <td>-</td>
+                                            @endif
+                                        @endforeach
                                     </tr>
                                 </tbody>
                             </table>

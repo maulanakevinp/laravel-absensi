@@ -17,7 +17,7 @@
                             <label for="nrp" class="col-md-4 col-form-label text-md-right">NRP</label>
 
                             <div class="col-md-6">
-                                <input id="nrp" type="nrp" class="form-control @error('nrp') is-invalid @enderror" name="nrp" value="{{ old('nrp') }}" autocomplete="nrp" autofocus>
+                                <input id="nrp" type="nrp" onkeypress="return hanyaAngka(event)" class="form-control @error('nrp') is-invalid @enderror" name="nrp" value="{{ old('nrp') }}" autocomplete="nrp" autofocus>
 
                                 @error('nrp')
                                     <span class="invalid-feedback" role="alert">
