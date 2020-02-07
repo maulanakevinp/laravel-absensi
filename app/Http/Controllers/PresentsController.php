@@ -111,7 +111,28 @@ class PresentsController extends Controller
     public function update(Request $request, Present $present)
     {
         if (auth()->user()->role_id) {
-            # code...
+            if ($request->jam_keluar) {
+                # code...
+            } else {
+                $data = $request->validate([
+                    'keterangan'    => ['required']
+                ]);
+
+                if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
+                    $data['jam_masuk'] = $request->jam_masuk;
+                    if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
+                        $data['keterangan'] = 'Masuk';
+                    } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
+                        $data['keterangan'] = 'Telat';
+                    } else {
+                        $data['keterangan'] = 'Alpha';
+                    }
+                } else {
+                    $data['jam_masuk'] = null;
+                }
+                $present->update($data);
+                return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',$present->tanggal).'" berhasil diubah');
+            }
         }
     }
 
