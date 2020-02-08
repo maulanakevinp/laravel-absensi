@@ -48,9 +48,9 @@ Detail User - {{ config('app.name') }}
                         </button>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('kehadiran.cari') }}" class="mb-3" method="get">
+                        <form action="{{ route('kehadiran.cari', ['user' => $user]) }}" class="mb-3" method="get">
                             <div class="input-group mb-3">
-                                <input type="month" class="form-control" name="bulan" id="bulan">
+                                <input type="month" class="form-control" name="bulan" id="bulan" value="{{ request('bulan') }}">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit">Cari</button>
                                 </div>
@@ -69,7 +69,7 @@ Detail User - {{ config('app.name') }}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($user->presents as $present)
+                                    @foreach ($presents as $present)
                                         <tr>
                                             <td>{{ date('d/m/Y', strtotime($present->tanggal)) }}</td>
                                             <td>{{ $present->keterangan }}</td>
@@ -80,7 +80,13 @@ Detail User - {{ config('app.name') }}
                                             @endif
                                             @if($present->jam_keluar)
                                                 <td>{{ date('H:i', strtotime($present->jam_keluar)) }}</td>
-                                                <td>{{ Carbon::parse($present->jam_masuk)->diffInHours(Carbon::parse($present->jam_keluar)) }}</td>
+                                                <td>
+                                                    @if (strtotime($present->jam_keluar) <= strtotime($present->jam_masuk))
+                                                        {{ 24 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
+                                                    @else 
+                                                        {{ \Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar)) }}
+                                                    @endif
+                                                </td>
                                             @else
                                                 <td>-</td>
                                                 <td>-</td>
@@ -94,6 +100,9 @@ Detail User - {{ config('app.name') }}
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div class="float-right">
+                                {{ $presents->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,7 +165,7 @@ Detail User - {{ config('app.name') }}
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form class="formUbahKehadiran" action="" method="post">
+                <form id="formUbahKehadiran" action="" method="post">
                     @csrf @method('patch')
                     <div class="modal-body">
                         <h5 class="mb-3" id="tanggal"></h5>

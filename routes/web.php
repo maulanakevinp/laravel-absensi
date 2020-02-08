@@ -35,9 +35,10 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
         Route::patch('/users/password/{user}', 'UsersController@password')->name('users.password');
         Route::resource('/users', 'UsersController');
         
-        Route::resource('/kehadiran', 'PresentsController');
-        Route::get('/kehadiran/cari', 'PresentController@search')->name('kehadiran.cari');
+        Route::get('/kehadiran/cari', 'PresentsController@search')->name('kehadiran.search');
+        Route::get('/kehadiran/{user}/cari', 'PresentsController@cari')->name('kehadiran.cari');
         Route::post('/kehadiran/ubah', 'PresentsController@ubah')->name('ajax.get.kehadiran');
+        Route::resource('/kehadiran', 'PresentsController');
     });
 
     Route::group(['roles' => 'Pegawai'], function(){

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Present;
+use App\User;
 use Illuminate\Http\Request;
 
 class PresentsController extends Controller
@@ -14,7 +15,23 @@ class PresentsController extends Controller
      */
     public function index()
     {
-        return view('presents\index');
+        $presents = Present::whereTanggal(date('Y-m-d'))->paginate(6);
+        $rank = $presents->firstItem();
+        return view('presents.index', compact('presents','rank'));
+    }
+
+    public function search(Request $request)
+    {
+        $presents = Present::whereTanggal($request->tanggal)->paginate(6);
+        $rank = $presents->firstItem();
+        return view('presents.index', compact('presents','rank'));
+    }
+
+    public function cari(Request $request, User $user)
+    {
+        $data = explode('-',$request->bulan);
+        $presents = Present::whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->paginate(5);
+        return view('users.show', compact('presents','user'));
     }
 
     /**
@@ -82,7 +99,7 @@ class PresentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Present  $present
+     * @param  \App\Present  $kehadiran
      * @return \Illuminate\Http\Response
      */
     public function show(Present $kehadiran)
@@ -93,10 +110,10 @@ class PresentsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Present  $present
+     * @param  \App\Present  $kehadiran
      * @return \Illuminate\Http\Response
      */
-    public function edit(Present $present)
+    public function edit(Present $kehadiran)
     {
         //
     }
@@ -105,44 +122,49 @@ class PresentsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Present  $present
+     * @param  \App\Present  $kehadiran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Present $present)
+    public function update(Request $request, Present $kehadiran)
     {
         if (auth()->user()->role_id) {
-            if ($request->jam_keluar) {
-                # code...
-            } else {
-                $data = $request->validate([
-                    'keterangan'    => ['required']
-                ]);
+            $data = $request->validate([
+                'keterangan'    => ['required']
+            ]);
 
-                if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
-                    $data['jam_masuk'] = $request->jam_masuk;
-                    if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
-                        $data['keterangan'] = 'Masuk';
-                    } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
-                        $data['keterangan'] = 'Telat';
-                    } else {
-                        $data['keterangan'] = 'Alpha';
-                    }
-                } else {
-                    $data['jam_masuk'] = null;
-                }
-                $present->update($data);
-                return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',$present->tanggal).'" berhasil diubah');
+            if ($request->jam_keluar) {
+                $data['jam_keluar'] = $request->jam_keluar;
             }
+
+            if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
+                $data['jam_masuk'] = $request->jam_masuk;
+                if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
+                    $data['keterangan'] = 'Masuk';
+                } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
+                    $data['keterangan'] = 'Telat';
+                } else {
+                    $data['keterangan'] = 'Alpha';
+                }
+            } else {
+                $data['jam_masuk'] = null;
+                $data['jam_keluar'] = null;
+            }
+            $kehadiran->update($data);
+            return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',strtotime($kehadiran->tanggal)).'" berhasil diubah');
+        } else {
+            $data['jam_keluar'] = $request->jam_keluar;
+            $kehadiran->update($data);
+            return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',strtotime($kehadiran->tanggal)).'" berhasil diubah');
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Present  $present
+     * @param  \App\Present  $kehadiran
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Present $present)
+    public function destroy(Present $kehadiran)
     {
         //
     }

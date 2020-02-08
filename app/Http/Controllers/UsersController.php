@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Present;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -68,7 +69,8 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        return view('users.show',compact('user'));
+        $presents = Present::whereUserId($user->id)->paginate(5);
+        return view('users.show',compact('user','presents'));
     }
 
     /**

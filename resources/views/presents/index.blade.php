@@ -12,15 +12,22 @@ Kehadiran - {{ config('app.name') }}
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-6">
-
-                        <form action="{{ route('users.search') }}" method="get">
-                            <input type="month" name="bulan" id="bulan" class="form-control">
+                    <div class="col-lg-6 mb-1">
+                        <form action="{{ route('kehadiran.search') }}" method="get">
+                            <div class="form-group row">
+                                <label for="tanggal" class="col-form-label col-sm-2">Tanggal</label>
+                                <div class="input-group col-sm-10">
+                                    <input type="date" class="form-control" name="tanggal" id="tanggal" value="{{ request('tanggal', date('Y-m-d')) }}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit">Cari</button>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="col-lg-6">
                         <div class="float-right">
-                            {{-- {{ $users->links() }} --}}
+                            {{ $presents->links() }}
                         </div>
                     </div>
                 </div>
@@ -31,22 +38,45 @@ Kehadiran - {{ config('app.name') }}
                                 <th>#</th>
                                 <th>NRP</th>
                                 <th>Nama</th>
-                                <th>Sebagai</th>
+                                <th>Keterangan</th>
+                                <th>Jam Masuk</th>
+                                <th>Jam Keluar</th>
+                                <th>Total Jam</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach ($users as $user)
+                            @foreach ($presents as $present)
                                 <tr>
                                     <th>{{ $rank++ }}</th>
-                                    <td>{{ $user->nrp }}</td>
-                                    <td>{{ $user->nama }}</td>
-                                    <td>{{ $user->role->role }}</td>
+                                    <td>{{ $present->user->nrp }}</td>
+                                    <td>{{ $present->user->nama }}</td>
+                                    <td>{{ $present->keterangan }}</td>
+                                    @if ($present->jam_masuk)
+                                        <td>{{ date('H:i', strtotime($present->jam_masuk)) }}</td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
+                                    @if($present->jam_keluar)
+                                        <td>{{ date('H:i', strtotime($present->jam_keluar)) }}</td>
+                                        <td>
+                                            @if (strtotime($present->jam_keluar) <= strtotime($present->jam_masuk))
+                                                {{ 24 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
+                                            @else 
+                                                {{ \Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar)) }}
+                                            @endif
+                                        </td>
+                                    @else
+                                        <td>-</td>
+                                        <td>-</td>
+                                    @endif
                                     <td>
-                                        <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info">Detail</a>
+                                        <button id="btnUbahKehadiran" data-id="{{ $present->id }}" type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ubahKehadiran">
+                                            <i class="far fa-edit"></i>
+                                        </button>
                                     </td>
                                 </tr>
-                            @endforeach  --}}
+                            @endforeach 
                         </tbody>
                     </table>                    
                 </div>
