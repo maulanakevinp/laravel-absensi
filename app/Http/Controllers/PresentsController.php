@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Present;
 use App\User;
+use App\Exports\PresentExport;
+use App\Exports\UsersPresentExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
 class PresentsController extends Controller
@@ -15,14 +18,14 @@ class PresentsController extends Controller
      */
     public function index()
     {
-        $presents = Present::whereTanggal(date('Y-m-d'))->paginate(6);
+        $presents = Present::whereTanggal(date('Y-m-d'))->orderBy('jam_masuk')->paginate(6);
         $rank = $presents->firstItem();
         return view('presents.index', compact('presents','rank'));
     }
 
     public function search(Request $request)
     {
-        $presents = Present::whereTanggal($request->tanggal)->paginate(6);
+        $presents = Present::whereTanggal($request->tanggal)->orderBy('jam_masuk')->paginate(6);
         $rank = $presents->firstItem();
         return view('presents.index', compact('presents','rank'));
     }
@@ -30,8 +33,15 @@ class PresentsController extends Controller
     public function cari(Request $request, User $user)
     {
         $data = explode('-',$request->bulan);
-        $presents = Present::whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->paginate(5);
+        $presents = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->orderBy('tanggal','desc')->paginate(5);
         return view('users.show', compact('presents','user'));
+    }
+
+    public function cariDaftarHadir(Request $request)
+    {
+        $data = explode('-',$request->bulan);
+        $presents = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->orderBy('tanggal','desc')->paginate(5);
+        return view('presents.show', compact('presents'));
     }
 
     /**
@@ -99,12 +109,12 @@ class PresentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Present  $kehadiran
      * @return \Illuminate\Http\Response
      */
-    public function show(Present $kehadiran)
+    public function show()
     {
-        return view('presents.show',compact('kehadiran'));
+        $presents = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->orderBy('tanggal','desc')->paginate(6);
+        return view('presents.show',compact('presents'));
     }
 
     /**
@@ -127,7 +137,7 @@ class PresentsController extends Controller
      */
     public function update(Request $request, Present $kehadiran)
     {
-        if (auth()->user()->role_id) {
+        if (auth()->user()->role_id == 1) {
             $data = $request->validate([
                 'keterangan'    => ['required']
             ]);
@@ -152,20 +162,19 @@ class PresentsController extends Controller
             $kehadiran->update($data);
             return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',strtotime($kehadiran->tanggal)).'" berhasil diubah');
         } else {
-            $data['jam_keluar'] = $request->jam_keluar;
+            $data['jam_keluar'] = date('H:i:s');
             $kehadiran->update($data);
             return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',strtotime($kehadiran->tanggal)).'" berhasil diubah');
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Present  $kehadiran
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Present $kehadiran)
+    public function excelUser(Request $request, User $user)
     {
-        //
+        return Excel::download(new PresentExport($user->id, $request->bulan), 'kehadiran-'.$user->nrp.'-'.$request->bulan.'.xlsx');
+    }
+
+    public function excelUsers(Request $request)
+    {
+        return Excel::download(new UsersPresentExport($request->tanggal), 'kehadiran-'.$request->tanggal.'.xlsx');
     }
 }

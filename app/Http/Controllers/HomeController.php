@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Present;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $present = Present::whereUserId(auth()->user()->id)->whereTanggal(date('Y-m-d'))->first();
+        return view('home', compact('present'));
     }
 }

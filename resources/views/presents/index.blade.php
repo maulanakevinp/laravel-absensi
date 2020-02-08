@@ -9,6 +9,10 @@ Kehadiran - {{ config('app.name') }}
         <div class="card shadow h-100">
             <div class="card-header">
                 <h5 class="m-0 pt-1 font-weight-bold float-left">Kehadiran</h5>
+                <form class="float-right" action="{{ route('kehadiran.excel-users') }}" method="get">
+                    <input type="hidden" name="tanggal" value="{{ request('tanggal', date('Y-m-d')) }}">
+                    <button class="btn btn-sm btn-success" type="submit">Download</button>
+                </form>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -42,39 +46,37 @@ Kehadiran - {{ config('app.name') }}
                                 <th>Jam Masuk</th>
                                 <th>Jam Keluar</th>
                                 <th>Total Jam</th>
-                                <th>Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($presents as $present)
                                 <tr>
                                     <th>{{ $rank++ }}</th>
-                                    <td>{{ $present->user->nrp }}</td>
+                                    <td><a href="{{ route('users.show',$present->user) }}">{{ $present->user->nrp }}</a></td>
                                     <td>{{ $present->user->nama }}</td>
                                     <td>{{ $present->keterangan }}</td>
                                     @if ($present->jam_masuk)
-                                        <td>{{ date('H:i', strtotime($present->jam_masuk)) }}</td>
+                                        <td>{{ date('H:i:s', strtotime($present->jam_masuk)) }}</td>
                                     @else
                                         <td>-</td>
                                     @endif
                                     @if($present->jam_keluar)
-                                        <td>{{ date('H:i', strtotime($present->jam_keluar)) }}</td>
+                                        <td>{{ date('H:i:s', strtotime($present->jam_keluar)) }}</td>
                                         <td>
                                             @if (strtotime($present->jam_keluar) <= strtotime($present->jam_masuk))
-                                                {{ 24 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
+                                                {{ 21 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
                                             @else 
-                                                {{ \Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar)) }}
+                                                @if (strtotime($present->jam_keluar) >= strtotime('19:00:00'))
+                                                    {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 3 }}
+                                                @else
+                                                    {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 1 }}
+                                                @endif
                                             @endif
                                         </td>
                                     @else
                                         <td>-</td>
                                         <td>-</td>
                                     @endif
-                                    <td>
-                                        <button id="btnUbahKehadiran" data-id="{{ $present->id }}" type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ubahKehadiran">
-                                            <i class="far fa-edit"></i>
-                                        </button>
-                                    </td>
                                 </tr>
                             @endforeach 
                         </tbody>

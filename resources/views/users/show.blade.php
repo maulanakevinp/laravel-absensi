@@ -46,13 +46,22 @@ Detail User - {{ config('app.name') }}
                         <button type="button" class="btn btn-sm btn-success float-right" data-toggle="modal" data-target="#kehadiran">
                             Tambah Kehadiran
                         </button>
+                        <form class="float-right d-inline-block" action="{{ route('kehadiran.excel-user',$user) }}" method="get">
+                            <input type="hidden" name="bulan" value="{{ request('bulan',date('Y-m')) }}">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Download
+                            </button>
+                        </form>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('kehadiran.cari', ['user' => $user]) }}" class="mb-3" method="get">
-                            <div class="input-group mb-3">
-                                <input type="month" class="form-control" name="bulan" id="bulan" value="{{ request('bulan') }}">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="submit">Cari</button>
+                            <div class="form-group row mb-3 ">
+                                <label for="bulan" class="col-form-label col-sm-2">Bulan</label>
+                                <div class="input-group col-sm-10">
+                                    <input type="month" class="form-control" name="bulan" id="bulan" value="{{ request('bulan',date('Y-m')) }}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit">Cari</button>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -74,17 +83,21 @@ Detail User - {{ config('app.name') }}
                                             <td>{{ date('d/m/Y', strtotime($present->tanggal)) }}</td>
                                             <td>{{ $present->keterangan }}</td>
                                             @if ($present->jam_masuk)
-                                                <td>{{ date('H:i', strtotime($present->jam_masuk)) }}</td>
+                                                <td>{{ date('H:i:s', strtotime($present->jam_masuk)) }}</td>
                                             @else
                                                 <td>-</td>
                                             @endif
                                             @if($present->jam_keluar)
-                                                <td>{{ date('H:i', strtotime($present->jam_keluar)) }}</td>
+                                                <td>{{ date('H:i:s', strtotime($present->jam_keluar)) }}</td>
                                                 <td>
                                                     @if (strtotime($present->jam_keluar) <= strtotime($present->jam_masuk))
-                                                        {{ 24 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
+                                                        {{ 21 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
                                                     @else 
-                                                        {{ \Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar)) }}
+                                                        @if (strtotime($present->jam_keluar) >= strtotime('19:00:00'))
+                                                            {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 3 }}
+                                                        @else
+                                                            {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 1 }}
+                                                        @endif
                                                     @endif
                                                 </td>
                                             @else
