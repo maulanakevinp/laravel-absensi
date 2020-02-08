@@ -52,15 +52,21 @@
                                 <a class="nav-link" href="{{ route('auth.index') }}">{{ __('Login') }}</a>
                             </li>
                         @else
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('kehadiran.index')}}">
-                                    Kehadiran
-                                </a>
-                            </li>
                             @if (auth()->user()->role->role == "Admin")
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('kehadiran.index')}}">
+                                        Kehadiran
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('users.index')}}">
                                         Users
+                                    </a>
+                                </li>
+                            @else
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('daftar-hadir')}}">
+                                        Kehadiran
                                     </a>
                                 </li>
                             @endif
