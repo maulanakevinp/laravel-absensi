@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Present;
 use App\User;
+use App\Exports\PresentExport;
+use App\Exports\UsersPresentExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
 class PresentsController extends Controller
@@ -165,14 +168,13 @@ class PresentsController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Present  $kehadiran
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Present $kehadiran)
+    public function excelUser(Request $request, User $user)
     {
-        //
+        return Excel::download(new PresentExport($user->id, $request->bulan), 'kehadiran-'.$user->nrp.'-'.$request->bulan.'.xlsx');
+    }
+
+    public function excelUsers(Request $request)
+    {
+        return Excel::download(new UsersPresentExport($request->tanggal), 'kehadiran-'.$request->tanggal.'.xlsx');
     }
 }

@@ -9,6 +9,10 @@ Kehadiran - {{ config('app.name') }}
         <div class="card shadow h-100">
             <div class="card-header">
                 <h5 class="m-0 pt-1 font-weight-bold float-left">Kehadiran</h5>
+                <form class="float-right" action="{{ route('kehadiran.excel-users') }}" method="get">
+                    <input type="hidden" name="tanggal" value="{{ request('tanggal', date('Y-m-d')) }}">
+                    <button class="btn btn-sm btn-success" type="submit">Download</button>
+                </form>
             </div>
             <div class="card-body">
                 <div class="row">

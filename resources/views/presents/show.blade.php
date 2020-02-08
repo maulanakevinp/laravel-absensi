@@ -8,9 +8,6 @@ Detail User - {{ config('app.name') }}
         <div class="card shadow h-100">
             <div class="card-header">
                 <h5 class="m-0 pt-1 font-weight-bold float-left">Kehadiran</h5>
-                <button type="button" class="btn btn-sm btn-success float-right" data-toggle="modal" data-target="#kehadiran">
-                    Tambah Kehadiran
-                </button>
             </div>
             <div class="card-body">
                 <form action="{{ route('daftar-hadir.cari') }}" class="mb-3" method="get">

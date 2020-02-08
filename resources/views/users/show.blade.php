@@ -46,6 +46,12 @@ Detail User - {{ config('app.name') }}
                         <button type="button" class="btn btn-sm btn-success float-right" data-toggle="modal" data-target="#kehadiran">
                             Tambah Kehadiran
                         </button>
+                        <form class="float-right d-inline-block" action="{{ route('kehadiran.excel-user',$user) }}" method="get">
+                            <input type="hidden" name="bulan" value="{{ request('bulan',date('Y-m')) }}">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Download
+                            </button>
+                        </form>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('kehadiran.cari', ['user' => $user]) }}" class="mb-3" method="get">
