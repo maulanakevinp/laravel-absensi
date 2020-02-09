@@ -35,18 +35,26 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
         Route::patch('/users/password/{user}', 'UsersController@password')->name('users.password');
         Route::resource('/users', 'UsersController');
         
+        Route::get('/kehadiran', 'PresentsController@index')->name('kehadiran.index');
         Route::get('/kehadiran/cari', 'PresentsController@search')->name('kehadiran.search');
         Route::get('/kehadiran/{user}/cari', 'PresentsController@cari')->name('kehadiran.cari');
         Route::get('/kehadiran/excel-users', 'PresentsController@excelUsers')->name('kehadiran.excel-users');
         Route::get('/kehadiran/{user}/excel-user', 'PresentsController@excelUser')->name('kehadiran.excel-user');
         Route::post('/kehadiran/ubah', 'PresentsController@ubah')->name('ajax.get.kehadiran');
-        Route::resource('/kehadiran', 'PresentsController')->except(['show,create,edit']);
+        Route::patch('/kehadiran/{kehadiran}', 'PresentsController@update')->name('kehadiran.update');
+        Route::post('/kehadiran', 'PresentsController@store')->name('kehadiran.store');
     });
 
     Route::group(['roles' => 'Pegawai'], function(){
         Route::get('/daftar-hadir', 'PresentsController@show')->name('daftar-hadir');
         Route::get('/daftar-hadir/cari', 'PresentsController@cariDaftarHadir')->name('daftar-hadir.cari');
-        Route::patch('/kehadiran/{kehadiran}', 'PresentsController@update')->name('kehadiran.update');
-        Route::post('/kehadiran', 'PresentsController@store')->name('kehadiran.store');
     });
+    
+    // ATUR IP ADDRESS DISINI 
+    Route::group(['middleware' => ['ipcheck:192.168.43.*']], function() {
+        Route::patch('/absen/{kehadiran}', 'PresentsController@checkOut')->name('kehadiran.check-out');
+        Route::post('/absen', 'PresentsController@checkIn')->name('kehadiran.check-in');
+    });
+
 });
+

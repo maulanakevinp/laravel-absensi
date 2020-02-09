@@ -44,14 +44,70 @@ class PresentsController extends Controller
         return view('presents.show', compact('presents'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function checkIn(Request $request)
     {
-        //
+        $users = User::all();
+        $alpha = false;
+
+        foreach ($users as $user) {
+            $absen = Present::whereUserId($user->id)->whereTanggal(date('Y-m-d'))->first();
+            if (!$absen) {
+                $alpha = true;
+            }
+        }
+        
+        if ($alpha) {
+            foreach ($users as $user) {
+                if ($user->id != $request->user_id) {
+                    Present::create([
+                        'keterangan'    => 'Alpha',
+                        'tanggal'       => date('Y-m-d'),
+                        'user_id'       => $user->id
+                    ]); 
+                }
+            }
+        }
+        
+        $present = Present::whereUserId($request->user_id)->whereTanggal(date('Y-m-d'))->first();
+        if ($present) {
+            if ($present->keterangan == 'Alpha') {
+                $data['jam_masuk']  = date('H:i:s');
+                $data['tanggal']    = date('Y-m-d');
+                $data['user_id']    = $request->user_id;
+                if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
+                    $data['keterangan'] = 'Masuk';
+                } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
+                    $data['keterangan'] = 'Telat';
+                } else {
+                    $data['keterangan'] = 'Alpha';
+                }
+                $present->update($data);
+                return redirect()->back()->with('success','Check-in berhasil'); 
+            } else {
+                return redirect()->back()->with('error','Check-in gagal');
+            }
+        }
+
+        $data['jam_masuk']  = date('H:i:s');
+        $data['tanggal']    = date('Y-m-d');
+        $data['user_id']    = $request->user_id;
+        if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
+            $data['keterangan'] = 'Masuk';
+        } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
+            $data['keterangan'] = 'Telat';
+        } else {
+            $data['keterangan'] = 'Alpha';
+        }
+        
+        Present::create($data);
+        return redirect()->back()->with('success','Check-in berhasil');
+    }
+
+    public function checkOut(Request $request, Present $kehadiran)
+    {
+        $data['jam_keluar'] = date('H:i:s');
+        $kehadiran->update($data);
+        return redirect()->back()->with('success', 'Check-out berhasil');
     }
 
     /**
@@ -66,27 +122,13 @@ class PresentsController extends Controller
         if ($present) {
             return redirect()->back()->with('error','Absensi hari ini telah terisi');
         }
-        if (auth()->user()->role_id == 1) {
-            $data = $request->validate([
-                'keterangan'    => ['required'],
-                'user_id'    => ['required']
-            ]);
-            $data['tanggal'] = date('Y-m-d');
-            if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
-                $data['jam_masuk'] = $request->jam_masuk;
-                if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
-                    $data['keterangan'] = 'Masuk';
-                } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
-                    $data['keterangan'] = 'Telat';
-                } else {
-                    $data['keterangan'] = 'Alpha';
-                }
-            }
-            Present::create($data);
-            return redirect()->back()->with('success','Kehadiran berhasil ditambahkan');
-        } else {
-            $data['jam_masuk']= date('H:i:s');
-            $data['tanggal'] = date('Y-m-d');
+        $data = $request->validate([
+            'keterangan'    => ['required'],
+            'user_id'    => ['required']
+        ]);
+        $data['tanggal'] = date('Y-m-d');
+        if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
+            $data['jam_masuk'] = $request->jam_masuk;
             if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
                 $data['keterangan'] = 'Masuk';
             } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
@@ -94,10 +136,9 @@ class PresentsController extends Controller
             } else {
                 $data['keterangan'] = 'Alpha';
             }
-            
-            Present::create($data);
-            return redirect()->back()->with('success','Kehadiran berhasil ditambahkan');
         }
+        Present::create($data);
+        return redirect()->back()->with('success','Kehadiran berhasil ditambahkan');
     }
 
     public function ubah(Request $request)
@@ -118,17 +159,6 @@ class PresentsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Present  $kehadiran
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Present $kehadiran)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -137,35 +167,29 @@ class PresentsController extends Controller
      */
     public function update(Request $request, Present $kehadiran)
     {
-        if (auth()->user()->role_id == 1) {
-            $data = $request->validate([
-                'keterangan'    => ['required']
-            ]);
+        $data = $request->validate([
+            'keterangan'    => ['required']
+        ]);
 
-            if ($request->jam_keluar) {
-                $data['jam_keluar'] = $request->jam_keluar;
-            }
-
-            if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
-                $data['jam_masuk'] = $request->jam_masuk;
-                if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
-                    $data['keterangan'] = 'Masuk';
-                } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
-                    $data['keterangan'] = 'Telat';
-                } else {
-                    $data['keterangan'] = 'Alpha';
-                }
-            } else {
-                $data['jam_masuk'] = null;
-                $data['jam_keluar'] = null;
-            }
-            $kehadiran->update($data);
-            return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',strtotime($kehadiran->tanggal)).'" berhasil diubah');
-        } else {
-            $data['jam_keluar'] = date('H:i:s');
-            $kehadiran->update($data);
-            return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',strtotime($kehadiran->tanggal)).'" berhasil diubah');
+        if ($request->jam_keluar) {
+            $data['jam_keluar'] = $request->jam_keluar;
         }
+
+        if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
+            $data['jam_masuk'] = $request->jam_masuk;
+            if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
+                $data['keterangan'] = 'Masuk';
+            } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
+                $data['keterangan'] = 'Telat';
+            } else {
+                $data['keterangan'] = 'Alpha';
+            }
+        } else {
+            $data['jam_masuk'] = null;
+            $data['jam_keluar'] = null;
+        }
+        $kehadiran->update($data);
+        return redirect()->back()->with('success', 'Kehadiran tanggal "'.date('l, d F Y',strtotime($kehadiran->tanggal)).'" berhasil diubah');
     }
 
     public function excelUser(Request $request, User $user)
