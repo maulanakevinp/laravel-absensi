@@ -77,7 +77,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Siap Absen?
+                    Sistem Absensi
                 </div>
             </div>
         </div>
