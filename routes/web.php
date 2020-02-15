@@ -34,7 +34,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
         Route::get('/users/cari', 'UsersController@search')->name('users.search');
         Route::patch('/users/password/{user}', 'UsersController@password')->name('users.password');
         Route::resource('/users', 'UsersController');
-        
+
         Route::get('/kehadiran', 'PresentsController@index')->name('kehadiran.index');
         Route::get('/kehadiran/cari', 'PresentsController@search')->name('kehadiran.search');
         Route::get('/kehadiran/{user}/cari', 'PresentsController@cari')->name('kehadiran.cari');
@@ -49,12 +49,11 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
         Route::get('/daftar-hadir', 'PresentsController@show')->name('daftar-hadir');
         Route::get('/daftar-hadir/cari', 'PresentsController@cariDaftarHadir')->name('daftar-hadir.cari');
     });
-    
-    // ATUR IP ADDRESS DISINI 
+
+    // ATUR IP ADDRESS DISINI
     Route::group(['middleware' => ['ipcheck:192.168.43.*']], function() {
         Route::patch('/absen/{kehadiran}', 'PresentsController@checkOut')->name('kehadiran.check-out');
         Route::post('/absen', 'PresentsController@checkIn')->name('kehadiran.check-in');
     });
 
 });
-

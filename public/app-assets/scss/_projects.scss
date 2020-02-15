@@ -1,0 +1,98 @@
+/* Projects Area css
+============================================================================================ */
+.projects_item{
+	position: relative;
+	overflow: hidden;
+	img{
+		width: 100%;
+	}
+	.hover{
+		position: absolute;
+		left: 0px;
+		bottom: -100%;
+		background: $baseColor;
+		width: 100%;
+		padding: 36px;
+		transition: all 400ms ease;
+		h4{
+			color: $dip;
+			text-transform: uppercase;
+			font-size: 18px;
+		}
+		p{
+			color: $dip;
+			max-width: 570px;
+			margin-bottom: 0px;
+		}
+	}
+	&:hover{
+		.hover{
+			bottom: 0px;
+		}
+	}
+}
+.wd_18{
+	flex: 0 0 18.23%;
+	max-width: 18.23%;
+}
+.wd_44{
+	flex: 0 0 45.31%;
+	max-width: 45.31%;
+}
+/* End Projects Area css
+============================================================================================ */
+
+/* Portfolio Details Area css
+============================================================================================ */
+.portfolio_details_area{
+	
+}
+.portfolio_details_inner{
+	.row{
+		margin-bottom: 65px;
+	}
+	p{
+		margin-bottom: 30px;
+		font-size: 14px;
+		&:last-child{
+			margin-bottom: 0px;
+		}
+	}
+	.portfolio_right_text{
+		padding-left: 98px;
+		h4{
+			color: $dip;
+			font-size: 21px;
+			text-transform: uppercase;
+			margin-bottom: 18px;
+		}
+		p{
+			margin-bottom: 25px;
+			font-size: 14px;
+		}
+		.list{
+			li{
+				margin-bottom: 7px;
+				span{
+					font-size: 14px;
+					color: $dip;
+					font-weight: bold;
+					width: 97px;
+					display: inline-block;
+				}
+				color: $pfont;
+				font-weight: normal;
+				font-size: 14px;
+				&:last-child{
+					margin-bottom: 0px;
+				}
+				i{
+					color: #f1cd09;
+				}
+			}
+		}
+	}
+}
+
+/* End Portfolio Details Area css
+============================================================================================ */
