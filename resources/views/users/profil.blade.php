@@ -41,7 +41,7 @@ Profil - {{ config('app.name') }}
                         </div>
                         <div class="form-group row justify-content-end">
                             <div class="col-sm-10">
-                                <button type="submit" class="btn btn-success btn-block">
+                                <button type="submit" class="btn btn-primary btn-block">
                                     Simpan
                                 </button>
                             </div>

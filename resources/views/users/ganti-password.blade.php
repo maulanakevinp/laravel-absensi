@@ -31,7 +31,7 @@ Ganti Password - {{ config('app.name') }}
                             @error('konfirmasi_password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-success btn-block">Simpan</button>
+                            <button type="submit" class="btn btn-primary btn-block">Simpan</button>
                         </div>
                     </form>
                 </div>

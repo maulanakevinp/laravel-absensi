@@ -19,29 +19,45 @@ class PresentsController extends Controller
     public function index()
     {
         $presents = Present::whereTanggal(date('Y-m-d'))->orderBy('jam_masuk')->paginate(6);
+        $masuk = Present::whereTanggal(date('Y-m-d'))->whereKeterangan('masuk')->count();
+        $telat = Present::whereTanggal(date('Y-m-d'))->whereKeterangan('telat')->count();
+        $cuti = Present::whereTanggal(date('Y-m-d'))->whereKeterangan('cuti')->count();
+        $alpha = Present::whereTanggal(date('Y-m-d'))->whereKeterangan('alpha')->count();
         $rank = $presents->firstItem();
-        return view('presents.index', compact('presents','rank'));
+        return view('presents.index', compact('presents','rank','masuk','telat','cuti','alpha'));
     }
 
     public function search(Request $request)
     {
         $presents = Present::whereTanggal($request->tanggal)->orderBy('jam_masuk')->paginate(6);
+        $masuk = Present::whereTanggal($request->tanggal)->whereKeterangan('masuk')->count();
+        $telat = Present::whereTanggal($request->tanggal)->whereKeterangan('telat')->count();
+        $cuti = Present::whereTanggal($request->tanggal)->whereKeterangan('cuti')->count();
+        $alpha = Present::whereTanggal($request->tanggal)->whereKeterangan('alpha')->count();
         $rank = $presents->firstItem();
-        return view('presents.index', compact('presents','rank'));
+        return view('presents.index', compact('presents','rank','masuk','telat','cuti','alpha'));
     }
 
     public function cari(Request $request, User $user)
     {
         $data = explode('-',$request->bulan);
         $presents = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->orderBy('tanggal','desc')->paginate(5);
-        return view('users.show', compact('presents','user'));
+        $masuk = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('masuk')->count();
+        $telat = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('telat')->count();
+        $cuti = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('cuti')->count();
+        $alpha = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('alpha')->count();
+        return view('users.show', compact('presents','user','masuk','telat','cuti','alpha'));
     }
 
     public function cariDaftarHadir(Request $request)
     {
         $data = explode('-',$request->bulan);
         $presents = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->orderBy('tanggal','desc')->paginate(5);
-        return view('presents.show', compact('presents'));
+        $masuk = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('masuk')->count();
+        $telat = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('telat')->count();
+        $cuti = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('cuti')->count();
+        $alpha = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('alpha')->count();
+        return view('presents.show', compact('presents','masuk','telat','cuti','alpha'));
     }
 
     public function checkIn(Request $request)
@@ -155,7 +171,11 @@ class PresentsController extends Controller
     public function show()
     {
         $presents = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->orderBy('tanggal','desc')->paginate(6);
-        return view('presents.show',compact('presents'));
+        $masuk = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('masuk')->count();
+        $telat = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('telat')->count();
+        $cuti = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('cuti')->count();
+        $alpha = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('alpha')->count();
+        return view('presents.show', compact('presents','masuk','telat','cuti','alpha'));
     }
 
     /**

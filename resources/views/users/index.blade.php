@@ -1,7 +1,31 @@
 @extends('layouts.app')
+
 @section('title')
 Users Management - {{ config('app.name') }}
 @endsection
+
+@section('header')
+    <div class="row">
+        <div class="col-xl-3 col-lg-6">
+            <div class="card card-stats mb-4 mb-xl-0">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Total User</h5>
+                            <span class="h2 font-weight-bold mb-0">{{ $users->count() }}</span>
+                        </div>
+                        <div class="col-auto">
+                            <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('content')
 
 <!-- Begin Page Content -->
@@ -9,7 +33,7 @@ Users Management - {{ config('app.name') }}
         <div class="card shadow h-100">
             <div class="card-header">
                 <h5 class="m-0 pt-1 font-weight-bold float-left">Users Management</h5>
-                <a href="{{ route('users.create') }}" class="btn btn-success btn-sm float-right">Tambah User</a>
+                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm float-right">Tambah User</a>
             </div>
             <div class="card-body">
                 <div class="row">
