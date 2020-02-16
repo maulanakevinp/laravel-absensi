@@ -1,57 +1,40 @@
-@extends('layouts.app')
+@extends('layouts.welcome')
+
 @section('title')
     Login - {{ config('app.name') }}
 @endsection
+
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow h-100">
-                <div class="card-header">{{ __('Login') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="nrp" class="col-md-4 col-form-label text-md-right">NRP</label>
-
-                            <div class="col-md-6">
-                                <input id="nrp" type="nrp" onkeypress="return hanyaAngka(event)" class="form-control @error('nrp') is-invalid @enderror" name="nrp" value="{{ old('nrp') }}" autocomplete="nrp" autofocus>
-
-                                @error('nrp')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-success">
-                                    {{ __('Login') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+    <form method="POST" action="{{ route('login') }}" role="form">
+        @csrf
+        <div class="form-group mb-3">
+            <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="ni ni-credit-card"></i></span>
                 </div>
+                <input id="nrp" type="nrp" onkeypress="return hanyaAngka(event)" class="form-control @error('nrp') is-invalid @enderror" name="nrp" value="{{ old('nrp') }}" autocomplete="nrp" autofocus placeholder="Masukkan NRP ...">
+                @error('nrp')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
             </div>
         </div>
-    </div>
-</div>
+        <div class="form-group">
+            <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                </div>
+                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="current-password" placeholder="Masukkan Password ...">
+                @error('password')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary my-4">Login</button>
+        </div>
+    </form>
 @endsection
