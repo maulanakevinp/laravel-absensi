@@ -38,7 +38,7 @@
     @auth
     <nav class="navbar navbar-top navbar-horizontal navbar-expand-md navbar-dark">
         <div class="container px-4">
-            <a class="navbar-brand" href="{{ url('argon') }}/index.html">
+            <a class="navbar-brand" href="{{ route('home') }}">
                 <h1 class="text-white">{{ config('app.name') }}</h1>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse-main"
@@ -50,8 +50,8 @@
                 <div class="navbar-collapse-header d-md-none">
                     <div class="row">
                         <div class="col-6 collapse-brand">
-                            <a href="{{ url('argon') }}/index.html">
-                                <img src="{{ url('argon') }}/assets/img/brand/blue.png">
+                            <a href="{{ route('home') }}">
+                                <h1 class="text-white">{{ config('app.name') }}</h1>
                             </a>
                         </div>
                         <div class="col-6 collapse-close">
