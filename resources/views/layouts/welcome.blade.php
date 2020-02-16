@@ -34,6 +34,80 @@
 </head>
 
 <body class="bg-default">
+    <!-- Navbar -->
+    @auth
+    <nav class="navbar navbar-top navbar-horizontal navbar-expand-md navbar-dark">
+        <div class="container px-4">
+            <a class="navbar-brand" href="{{ url('argon') }}/index.html">
+                <h1 class="text-white">{{ config('app.name') }}</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse-main"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-collapse-main">
+                <!-- Collapse header -->
+                <div class="navbar-collapse-header d-md-none">
+                    <div class="row">
+                        <div class="col-6 collapse-brand">
+                            <a href="{{ url('argon') }}/index.html">
+                                <img src="{{ url('argon') }}/assets/img/brand/blue.png">
+                            </a>
+                        </div>
+                        <div class="col-6 collapse-close">
+                            <button type="button" class="navbar-toggler" data-toggle="collapse"
+                                data-target="#navbar-collapse-main" aria-controls="sidenav-main" aria-expanded="false"
+                                aria-label="Toggle sidenav">
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navbar items -->
+                <ul class="navbar-nav ml-auto">
+                    @if (auth()->user()->role->role == "Admin")
+                        <li class="nav-item">
+                            <a href="{{ route('users.index') }}" class="nav-link nav-link-icon">
+                                <i class="ni ni-circle-08"></i>
+                                <span class="nav-link-inner--text">Users</span>
+                            </a>
+                        </li>
+                    @endif
+                    <li class="nav-item">
+                        @if (auth()->user()->role->role == "Admin")
+                            <a class="nav-link nav-link-icon" href="{{ route('kehadiran.index') }}">
+                        @else
+                            <a class="nav-link nav-link-icon" href="{{ route('daftar-hadir') }}">
+                        @endif
+                            <i class="ni ni-check-bold"></i>
+                            <span class="nav-link-inner--text">Kehadiran</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-icon" href="{{ route('profil') }}">
+                            <i class="ni ni-single-02"></i>
+                            <span class="nav-link-inner--text">Profile</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-icon" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="ni ni-user-run"></i>
+                            <span class="nav-link-inner--text">Logout</span>
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    @endauth
+
     <div class="main-content">
         <!-- Header -->
         <div class="header bg-gradient-primary py-7 py-lg-8">
@@ -69,9 +143,9 @@
         <footer class="py-5">
             <div class="container">
                 <div class="copyright text-center">
-                    © {{ date('Y')}} <a href="https://grhayasa.com/" class="font-weight-bold ml-1"
-                        target="_blank">PT. Grhayasa Nusacitra Estima</a> Theme By <a href="https://www.creative-tim.com" class="font-weight-bold ml-1"
-                        target="_blank">Creative Tim</a>
+                    © {{ date('Y')}} <a href="https://grhayasa.com/" class="font-weight-bold ml-1" target="_blank">PT.
+                        Grhayasa Nusacitra Estima</a> Theme By <a href="https://www.creative-tim.com"
+                        class="font-weight-bold ml-1" target="_blank">Creative Tim</a>
                 </div>
             </div>
         </footer>

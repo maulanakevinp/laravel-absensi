@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.welcome')
 @section('title')
     Home - {{ config('app.name') }}
 @endsection
 @section('content')
-<div class="container">
+{{-- <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow h-100">
@@ -11,46 +11,51 @@
 
                 <div class="card-body">
                     @if (session('status'))
-                        <div class="alert alert-success" role="alert">
+                        <div class="alert alert-primary" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
 
-                    Selamat datang {{ Auth::user()->nama }}!
+                    Selamat datang {{ Auth::user()->nama }}! --}}
                     @if ($present)
                         @if ($present->keterangan == 'Alpha')
-                            <br>Anda belum melakukan check in silahkan check-in 
+                            <div class="text-center">
+                                <p>Silahkan check-in terlebih dahulu</p>
+                                <form action="{{ route('kehadiran.check-in') }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                    <button class="btn btn-primary" type="submit">Check-in</button>
+                                </form>
+                            </div>
+                        @else
+                            <div class="text-center">
+                                <p>
+                                    Check-in hari ini pukul : ({{ ($present->jam_masuk) }})
+                                </p>
+                                @if ($present->jam_keluar)
+                                    <p>Check-out hari ini pukul : ({{ $present->jam_keluar }})</p>
+                                @else
+                                    <p>Jika pekerjaan telah selesai silahkan check-out</p>
+                                    <form action="{{ route('kehadiran.check-out', ['kehadiran' => $present]) }}" method="post">
+                                        @csrf @method('patch')
+                                        <button class="btn btn-primary" type="submit">Check-out</button>
+                                    </form>
+                                @endif
+                            </div>
+                        @endif
+                    @else
+                        <div class="text-center">
+                            <p>Silahkan check-in terlebih dahulu</p>
                             <form action="{{ route('kehadiran.check-in') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                                <button class="btn btn-success" type="submit">Check-in</button>
+                                <button class="btn btn-primary" type="submit">Check-in</button>
                             </form>
-                        @else
-                            <br>
-                            Anda telah melakukan check-in hari ini pukul ({{ ($present->jam_masuk) }})
-                            @if ($present->jam_keluar)
-                                <br>
-                                Anda telah melakukan check-out hari ini pukul ({{ $present->jam_keluar }})
-                            @else
-                                <br>
-                                Jika pekerjaan telah selesai silahkan check-out 
-                                <form action="{{ route('kehadiran.check-out', ['kehadiran' => $present]) }}" method="post">
-                                    @csrf @method('patch')
-                                    <button class="btn btn-success" type="submit">Check-out</button>
-                                </form>
-                            @endif
-                        @endif
-                    @else
-                        <br>Anda belum melakukan check in silahkan check-in 
-                        <form action="{{ route('kehadiran.check-in') }}" method="post">
-                            @csrf
-                            <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                            <button class="btn btn-success" type="submit">Check-in</button>
-                        </form>
+                        </div>
                     @endif
-                </div>
+                {{-- </div>
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 @endsection
