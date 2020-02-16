@@ -23,16 +23,16 @@ Detail User - {{ config('app.name') }}
                                 </tbody>
                             </table>
                             <div class="float-right">
-                                <a href="{{ route('users.edit',$user) }}" class="btn btn-warning">Ubah</a>
+                                <a href="{{ route('users.edit',$user) }}" class="btn btn-sm btn-success" title="Ubah"><i class="fas fa-edit"></i></a>
                                 @if ($user->id != auth()->user()->id)
                                     <form class="d-inline-block" action="{{ route('users.destroy',$user) }}" method="post">
                                         @csrf @method('delete')
-                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus user ini ???')">Hapus</button>
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Hapus" onclick="return confirm('Apakah anda yakin ingin menghapus user ini ???')"><i class="fas fa-trash"></i></button>
                                     </form>
                                 @endif
                                 <form class="d-inline-block" action="{{ route('users.password',$user) }}" method="post">
                                     @csrf @method('patch')
-                                    <button type="submit" class="btn btn-dark" onclick="return confirm('Apakah anda yakin ingin mereset password user ini ???')">Reset Password</button>
+                                    <button type="submit" class="btn btn-sm btn-dark" onclick="return confirm('Apakah anda yakin ingin mereset password user ini ???')">Reset Password</button>
                                 </form>
                             </div>
                         </div>
@@ -43,13 +43,13 @@ Detail User - {{ config('app.name') }}
                 <div class="card shadow h-100">
                     <div class="card-header">
                         <h5 class="m-0 pt-1 font-weight-bold float-left">Kehadiran</h5>
-                        <button type="button" class="btn btn-sm btn-success float-right" data-toggle="modal" data-target="#kehadiran">
-                            Tambah Kehadiran
+                        <button title="Tambah Kehadiran" type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#kehadiran">
+                            <i class="fas fa-plus"></i>
                         </button>
                         <form class="float-right d-inline-block" action="{{ route('kehadiran.excel-user',$user) }}" method="get">
                             <input type="hidden" name="bulan" value="{{ request('bulan',date('Y-m')) }}">
-                            <button type="submit" class="btn btn-sm btn-primary">
-                                Download
+                            <button title="Download" type="submit" class="btn btn-sm btn-success">
+                                <i class="fas fa-download"></i>
                             </button>
                         </form>
                     </div>

@@ -33,7 +33,7 @@ Users Management - {{ config('app.name') }}
         <div class="card shadow h-100">
             <div class="card-header">
                 <h5 class="m-0 pt-1 font-weight-bold float-left">Users Management</h5>
-                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm float-right">Tambah User</a>
+                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm float-right" title="Tambah User"><i class="fas fa-plus"></i></a>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -67,7 +67,7 @@ Users Management - {{ config('app.name') }}
                                     <td>{{ $user->nama }}</td>
                                     <td>{{ $user->role->role }}</td>
                                     <td>
-                                        <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info">Detail</a>
+                                        <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info" title="Detail User"><i class="fas fa-eye"></i></a>
                                     </td>
                                 </tr>
                             @endforeach 

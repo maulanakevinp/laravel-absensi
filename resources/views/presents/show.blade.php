@@ -92,7 +92,7 @@ Detail User - {{ config('app.name') }}
                         <div class="input-group col-sm-10">
                             <input type="month" class="form-control" name="bulan" id="bulan" value="{{ request('bulan',date('Y-m')) }}">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Cari</button>
+                                <button class="btn btn-outline-primary" type="submit">Cari</button>
                             </div>
                         </div>
                     </div>
