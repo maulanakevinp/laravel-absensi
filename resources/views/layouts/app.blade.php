@@ -114,8 +114,13 @@
                             </a>
                         </li>
                     @else
-                        <li class="nav-item">
+                        @if (Request::segment(1) == 'daftar-hadir')
+                            <li class="nav-item active">
+                            <a class="nav-link active" href="{{ route('daftar-hadir') }}">
+                        @else
+                            <li class="nav-item">
                             <a class="nav-link" href="{{ route('daftar-hadir') }}">
+                        @endif
                                 <i class="ni ni-check-bold text-primary"></i> Kehadiran
                             </a>
                         </li>
