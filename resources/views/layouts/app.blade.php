@@ -92,33 +92,59 @@
                 <!-- Navigation -->
                 <ul class="navbar-nav">
                     @if (auth()->user()->role->role == "Admin")
-                    <li class="nav-item  active ">
-                        <a class="nav-link  active " href="{{ route('kehadiran.index') }}">
-                            <i class="ni ni-check-bold text-primary"></i> Kehadiran
-                        </a>
-                    </li>
-                    <li class="nav-item  active ">
-                        <a class="nav-link  active " href="{{ route('users.index') }}">
-                            <i class="ni ni-circle-08 text-primary"></i> Users
-                        </a>
-                    </li>
+                        @if (Request::segment(1) == 'kehadiran')
+                            <li class="nav-item active">
+                            <a class="nav-link active" href="{{ route('kehadiran.index') }}">
+                        @else
+                            <li class="nav-item">
+                            <a class="nav-link" href="{{ route('kehadiran.index') }}">
+                        @endif
+                                <i class="ni ni-check-bold text-primary"></i> Kehadiran
+                            </a>
+                        </li>
+
+                        @if (Request::segment(1) == 'users')
+                            <li class="nav-item active">
+                            <a class="nav-link active" href="{{ route('users.index') }}">
+                        @else
+                            <li class="nav-item">
+                            <a class="nav-link" href="{{ route('users.index') }}">
+                        @endif
+                                <i class="ni ni-circle-08 text-primary"></i> Users
+                            </a>
+                        </li>
                     @else
-                    <li class="nav-item  active ">
-                        <a class="nav-link  active " href="{{ route('daftar-hadir') }}">
-                            <i class="ni ni-check-bold text-primary"></i> Kehadiran
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('daftar-hadir') }}">
+                                <i class="ni ni-check-bold text-primary"></i> Kehadiran
+                            </a>
+                        </li>
                     @endif
-                    <li class="nav-item">
-                        <a class="nav-link " href="{{ route('profil') }}">
+                    
+                    @if (Request::segment(1) == 'profil')
+                        <li class="nav-item active">
+                        <a class="nav-link active" href="{{ route('profil') }}">
+                    @else
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ route('profil') }}">
+                    @endif
                             <i class="ni ni-single-02 text-yellow"></i> Profil
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="{{ route('ganti-password') }}">
+
+                    @if (Request::segment(1) == 'ganti-password')
+                        <li class="nav-item active">
+                        <a class="nav-link active" href="{{ route('ganti-password') }}">
+                    @else
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ route('ganti-password') }}">
+                    @endif
                             <i class="ni ni-key-25 text-green"></i> Ganti Password
                         </a>
                     </li>
+                </ul>
+                <hr class="my-3">
+                <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
