@@ -65,6 +65,10 @@ class PresentsController extends Controller
         $users = User::all();
         $alpha = false;
 
+        if (date('l') == 'Saturday' || date('l') == 'Sunday') {
+            return redirect()->back()->with('error','Hari Libur Tidak bisa Check In');
+        }
+
         foreach ($users as $user) {
             $absen = Present::whereUserId($user->id)->whereTanggal(date('Y-m-d'))->first();
             if (!$absen) {
