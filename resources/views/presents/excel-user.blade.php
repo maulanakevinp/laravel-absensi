@@ -37,5 +37,8 @@
                 @endif
             </tr>
         @endforeach
+        <tr>
+            <td colspan="5"><b>Total Telat {{ $totalJamTelat }} Jam Bulan Ini</b></td>
+        </tr>
     </tbody>
 </table>

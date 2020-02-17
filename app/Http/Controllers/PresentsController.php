@@ -46,7 +46,27 @@ class PresentsController extends Controller
         $telat = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('telat')->count();
         $cuti = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('cuti')->count();
         $alpha = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('alpha')->count();
-        return view('users.show', compact('presents','user','masuk','telat','cuti','alpha'));
+        $kehadiran = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('telat')->get();
+        $totalJamTelat = 0;
+        foreach ($kehadiran as $present) {
+            $totalJamTelat = $totalJamTelat + (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse('07:00:00')));
+        }
+        $url = 'https://kalenderindonesia.com/api/YZ35u6a7sFWN/libur/masehi/'.date('Y/m');
+        $kalender = file_get_contents($url);
+        $kalender = json_decode($kalender, true);
+        $libur = false;
+        $holiday = null;
+        if ($kalender['Data'] != false) {
+            for ($i=0; $i < count($kalender['Data']); $i++) { 
+                if ($kalender['Data'][$i]['Date']['M'] == date('Y-m-d')) {
+                    $libur = true;
+                    $translate = $kalender['Data'][$i]['Holiday']['Name'];
+                    $holiday = $kalender['Translate'][$translate];
+                    break;
+                }
+            }
+        }
+        return view('users.show', compact('presents','user','masuk','telat','cuti','alpha','libur','totalJamTelat'));
     }
 
     public function cariDaftarHadir(Request $request)

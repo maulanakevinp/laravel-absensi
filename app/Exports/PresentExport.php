@@ -20,6 +20,11 @@ class PresentExport implements Fromview
     {
         $data = explode('-',$this->bulan);
         $presents = Present::whereUserId($this->user_id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->orderBy('tanggal','desc')->get();
-        return view('presents.excel-user', compact('presents'));
+        $kehadiran = Present::whereUserId($this->user_id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('telat')->get();
+        $totalJamTelat = 0;
+        foreach ($kehadiran as $present) {
+            $totalJamTelat = $totalJamTelat + (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse('07:00:00')));
+        }
+        return view('presents.excel-user', compact('presents','totalJamTelat'));
     }
 }

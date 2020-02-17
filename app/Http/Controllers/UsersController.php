@@ -70,6 +70,15 @@ class UsersController extends Controller
     public function show(User $user)
     {
         $presents = Present::whereUserId($user->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->orderBy('tanggal','desc')->paginate(5);
+        $masuk = Present::whereUserId($user->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('masuk')->count();
+        $telat = Present::whereUserId($user->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('telat')->count();
+        $cuti = Present::whereUserId($user->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('cuti')->count();
+        $alpha = Present::whereUserId($user->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('alpha')->count();
+        $kehadiran = Present::whereUserId($user->id)->whereMonth('tanggal',date('m'))->whereYear('tanggal',date('Y'))->whereKeterangan('telat')->get();
+        $totalJamTelat = 0;
+        foreach ($kehadiran as $present) {
+            $totalJamTelat = $totalJamTelat + (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse('07:00:00')));
+        }
         $url = 'https://kalenderindonesia.com/api/YZ35u6a7sFWN/libur/masehi/'.date('Y/m');
         $kalender = file_get_contents($url);
         $kalender = json_decode($kalender, true);
@@ -85,7 +94,7 @@ class UsersController extends Controller
                 }
             }
         }
-        return view('users.show',compact('user','presents','libur'));
+        return view('users.show',compact('user','presents','libur','masuk','telat','cuti','alpha','totalJamTelat'));
     }
 
     /**
