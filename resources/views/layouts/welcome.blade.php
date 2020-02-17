@@ -170,8 +170,8 @@
     <script src="{{ url('argon') }}/assets/js/plugins/jquery/dist/jquery.min.js"></script>
     <script src="{{ url('argon') }}/assets/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!--   Optional JS   -->
-    <!--   Argon JS   -->
-    <script src="{{ url('argon') }}/assets/js/argon-dashboard.min.js?v=1.1.2"></script>
+    @stack('scripts')
+
     <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
     <script>
         window.TrackJS &&
@@ -182,7 +182,7 @@
 
     </script>
     <script src="{{ asset('js/myscript.js') }}"></script>
-
+    
 </body>
 
 </html>

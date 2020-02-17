@@ -43,9 +43,13 @@ Detail User - {{ config('app.name') }}
                 <div class="card shadow h-100">
                     <div class="card-header">
                         <h5 class="m-0 pt-1 font-weight-bold float-left">Kehadiran</h5>
-                        <button title="Tambah Kehadiran" type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#kehadiran">
-                            <i class="fas fa-plus"></i>
-                        </button>
+                        @if ($libur == false)
+                            @if (date('l') != 'Saturday' && date('l') != 'Sunday')
+                                <button title="Tambah Kehadiran" type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#kehadiran">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            @endif
+                        @endif
                         <form class="float-right d-inline-block" action="{{ route('kehadiran.excel-user',$user) }}" method="get">
                             <input type="hidden" name="bulan" value="{{ request('bulan',date('Y-m')) }}">
                             <button title="Download" type="submit" class="btn btn-sm btn-success">
