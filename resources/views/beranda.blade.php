@@ -22,6 +22,10 @@
                         <p>Check-in Belum Tersedia</p>
                     @endif
                 </div>
+            @elseif($present->keterangan == 'Cuti')
+                <div class="text-center">
+                    <p>Anda Sedang Cuti</p>
+                </div>
             @else
                 <div class="text-center">
                     <p>
