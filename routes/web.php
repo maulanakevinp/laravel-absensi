@@ -55,5 +55,4 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
         Route::patch('/absen/{kehadiran}', 'PresentsController@checkOut')->name('kehadiran.check-out');
         Route::post('/absen', 'PresentsController@checkIn')->name('kehadiran.check-in');
     });
-
 });

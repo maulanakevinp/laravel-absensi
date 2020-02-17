@@ -25,6 +25,6 @@ class HomeController extends Controller
     public function index()
     {
         $present = Present::whereUserId(auth()->user()->id)->whereTanggal(date('Y-m-d'))->first();
-        return view('home', compact('present'));
+        return view('beranda', compact('present'));
     }
 }
