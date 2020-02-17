@@ -51,7 +51,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function(){
     });
 
     // ATUR IP ADDRESS DISINI
-    Route::group(['middleware' => ['ipcheck:192.168.43.*']], function() {
+    Route::group(['middleware' => ['ipcheck:192.168.100.*']], function() {
         Route::patch('/absen/{kehadiran}', 'PresentsController@checkOut')->name('kehadiran.check-out');
         Route::post('/absen', 'PresentsController@checkIn')->name('kehadiran.check-in');
     });
