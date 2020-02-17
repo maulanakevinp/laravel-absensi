@@ -51,7 +51,7 @@
                     <div class="row">
                         <div class="col-6 collapse-brand">
                             <a href="{{ route('home') }}">
-                                <h1 class="text-white">{{ config('app.name') }}</h1>
+                                <h1>{{ config('app.name') }}</h1>
                             </a>
                         </div>
                         <div class="col-6 collapse-close">
