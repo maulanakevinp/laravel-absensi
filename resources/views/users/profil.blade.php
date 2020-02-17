@@ -18,7 +18,7 @@ Profil - {{ config('app.name') }}
                             <img id="image" src="{{ Storage::url(Auth::user()->foto ) }}" alt="{{ Auth::user()->foto }}" class="img-thumbnail mb-1">
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-2"><label for="foto" class="float-right col-form-label">Foto</label></div>
+                            <div class="col-sm-2"><label for="foto" class="col-form-label">Foto</label></div>
                             <div class="col-sm-10">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="foto" name="foto">
@@ -27,13 +27,13 @@ Profil - {{ config('app.name') }}
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-2"><label for="nrp" class="float-right col-form-label">NRP</label></div>
+                            <div class="col-sm-2"><label for="nrp" class="col-form-label">NRP</label></div>
                             <div class="col-sm-10">
                                 <input disabled type="text" class="form-control" id="nrp" name="nrp" value="{{ Auth::user()->nrp }}">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-2"><label for="nama" class="float-right col-form-label">Nama</label></div>
+                            <div class="col-sm-2"><label for="nama" class="col-form-label">Nama</label></div>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ Auth::user()->nama }}">
                                 @error('nama') <span class="invalid-feedback" role="alert">{{ $message }}</span> @enderror
