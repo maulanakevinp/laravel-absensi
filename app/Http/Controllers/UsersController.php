@@ -223,6 +223,9 @@ class UsersController extends Controller
 
     public function search(Request $request)
     {
+        $request->validate([
+            'cari' => ['required']
+        ]);
         $users = User::where('nama','like','%'.$request->cari.'%')
                     ->orWhere('nrp','like','%'.$request->cari.'%')
                     ->paginate(6);

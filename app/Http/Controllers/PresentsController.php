@@ -29,9 +29,9 @@ class PresentsController extends Controller
 
     public function search(Request $request)
     {
-        if (!$request->tanggal) {
-            return back();
-        }
+        $request->validate([
+            'tanggal' => ['required']
+        ]);
         $presents = Present::whereTanggal($request->tanggal)->orderBy('jam_masuk')->paginate(6);
         $masuk = Present::whereTanggal($request->tanggal)->whereKeterangan('masuk')->count();
         $telat = Present::whereTanggal($request->tanggal)->whereKeterangan('telat')->count();
@@ -43,9 +43,9 @@ class PresentsController extends Controller
 
     public function cari(Request $request, User $user)
     {
-        if (!$request->bulan) {
-            return back();
-        }
+        $request->validate([
+            'bulan' => ['required']
+        ]);
         $data = explode('-',$request->bulan);
         $presents = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->orderBy('tanggal','desc')->paginate(5);
         $masuk = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('masuk')->count();
@@ -77,9 +77,9 @@ class PresentsController extends Controller
 
     public function cariDaftarHadir(Request $request)
     {
-        if (!$request->bulan) {
-            return back();
-        }
+        $request->validate([
+            'bulan' => ['required']
+        ]);
         $data = explode('-',$request->bulan);
         $presents = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->orderBy('tanggal','desc')->paginate(5);
         $masuk = Present::whereUserId(auth()->user()->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('masuk')->count();
