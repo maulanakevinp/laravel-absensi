@@ -30,12 +30,11 @@ class HomeController extends Controller
         $kalender = json_decode($kalender, true);
         $libur = false;
         $holiday = null;
-        if ($kalender['Data'] != false) {
-            for ($i=0; $i < count($kalender['Data']); $i++) { 
-                if ($kalender['Data'][$i]['Date']['M'] == date('Y-m-d')) {
+        if ($kalender['data'] != false) {
+            foreach ($kalender['data']['holiday']['data'] as $key => $value) {
+                if ($value['date'] == date('Y-m-d')) {
+                    $holiday = $value['name'];
                     $libur = true;
-                    $translate = $kalender['Data'][$i]['Holiday']['Name'];
-                    $holiday = $kalender['Translate'][$translate];
                     break;
                 }
             }
