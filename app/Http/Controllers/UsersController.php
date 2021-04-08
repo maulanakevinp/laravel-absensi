@@ -84,12 +84,11 @@ class UsersController extends Controller
         $kalender = json_decode($kalender, true);
         $libur = false;
         $holiday = null;
-        if ($kalender['Data'] != false) {
-            for ($i=0; $i < count($kalender['Data']); $i++) { 
-                if ($kalender['Data'][$i]['Date']['M'] == date('Y-m-d')) {
+        if ($kalender['data'] != false) {
+            foreach ($kalender['data']['holiday']['data'] as $key => $value) {
+                if ($value['date'] == date('Y-m-d')) {
+                    $holiday = $value['name'];
                     $libur = true;
-                    $translate = $kalender['Data'][$i]['Holiday']['Name'];
-                    $holiday = $kalender['Translate'][$translate];
                     break;
                 }
             }
@@ -149,7 +148,7 @@ class UsersController extends Controller
         User::destroy($user->id);
         return redirect('/users')->with('success','User "'.$user->nama.'" berhasil dihapus');
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *

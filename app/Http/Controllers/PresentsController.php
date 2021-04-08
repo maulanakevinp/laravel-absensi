@@ -62,12 +62,11 @@ class PresentsController extends Controller
         $kalender = json_decode($kalender, true);
         $libur = false;
         $holiday = null;
-        if ($kalender['Data'] != false) {
-            for ($i=0; $i < count($kalender['Data']); $i++) { 
-                if ($kalender['Data'][$i]['Date']['M'] == date('Y-m-d')) {
+        if ($kalender['data'] != false) {
+            foreach ($kalender['data']['holiday']['data'] as $key => $value) {
+                if ($value['date'] == date('Y-m-d')) {
+                    $holiday = $value['name'];
                     $libur = true;
-                    $translate = $kalender['Data'][$i]['Holiday']['Name'];
-                    $holiday = $kalender['Translate'][$translate];
                     break;
                 }
             }
@@ -104,7 +103,7 @@ class PresentsController extends Controller
                 $alpha = true;
             }
         }
-        
+
         if ($alpha) {
             foreach ($users as $user) {
                 if ($user->id != $request->user_id) {
@@ -112,11 +111,11 @@ class PresentsController extends Controller
                         'keterangan'    => 'Alpha',
                         'tanggal'       => date('Y-m-d'),
                         'user_id'       => $user->id
-                    ]); 
+                    ]);
                 }
             }
         }
-        
+
         $present = Present::whereUserId($request->user_id)->whereTanggal(date('Y-m-d'))->first();
         if ($present) {
             if ($present->keterangan == 'Alpha') {
@@ -131,7 +130,7 @@ class PresentsController extends Controller
                     $data['keterangan'] = 'Alpha';
                 }
                 $present->update($data);
-                return redirect()->back()->with('success','Check-in berhasil'); 
+                return redirect()->back()->with('success','Check-in berhasil');
             } else {
                 return redirect()->back()->with('error','Check-in gagal');
             }
@@ -147,7 +146,7 @@ class PresentsController extends Controller
         } else {
             $data['keterangan'] = 'Alpha';
         }
-        
+
         Present::create($data);
         return redirect()->back()->with('success','Check-in berhasil');
     }
