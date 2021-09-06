@@ -63,11 +63,13 @@ class PresentsController extends Controller
         $libur = false;
         $holiday = null;
         if ($kalender['data'] != false) {
-            foreach ($kalender['data']['holiday']['data'] as $key => $value) {
-                if ($value['date'] == date('Y-m-d')) {
-                    $holiday = $value['name'];
-                    $libur = true;
-                    break;
+            if ($kalender['data']['holiday']['data']) {
+                foreach ($kalender['data']['holiday']['data'] as $key => $value) {
+                    if ($value['date'] == date('Y-m-d')) {
+                        $holiday = $value['name'];
+                        $libur = true;
+                        break;
+                    }
                 }
             }
         }
