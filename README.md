@@ -24,3 +24,5 @@ User Karyawan:
 - Jika Karyawan tidak melakukan Create Presensi Jam Masuk hingga jam 17.00 maka tergolong Alpha
 - Jika Karyawan melakukan Create Presensi Jam Keluar sebelum jam 20.00 maka tidak tergolong Lembur
 - Jika Karyawan melakukan Create Presensi Jam Keluar sesudah jam 20.00 maka tergolong lembur
+
+## Donasinya Kakak https://saweria.co/maulanakevinp Terima Kasih ^_^
