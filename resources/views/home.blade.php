@@ -8,7 +8,7 @@
             <p>Absen Libur (Hari Libur Nasional {{ $holiday }})</p>
         </div>
     @else
-        @if (date('l') == "Saturday" || date('l') == "Sunday") 
+        @if (date('l') == "Saturday" || date('l') == "Sunday")
             <div class="text-center">
                 <p>Absen Libur</p>
             </div>
@@ -16,7 +16,7 @@
             @if ($present)
                 @if ($present->keterangan == 'Alpha')
                     <div class="text-center">
-                        @if (strtotime(date('H:i:s')) >= strtotime('07:00:00') && strtotime(date('H:i:s')) <= strtotime('17:00:00'))
+                        @if (strtotime(date('H:i:s')) >= strtotime(config('absensi.jam_masuk') .' -1 hours') && strtotime(date('H:i:s')) <= strtotime(config('absensi.jam_pulang')))
                             <p>Silahkan Check-in</p>
                             <form action="{{ route('kehadiran.check-in') }}" method="post">
                                 @csrf
@@ -39,7 +39,7 @@
                         @if ($present->jam_keluar)
                             <p>Check-out hari ini pukul : ({{ $present->jam_keluar }})</p>
                         @else
-                            @if ((\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse(date('H:i:s')))) >= 2)
+                            @if (strtotime('now') >= strtotime(config('absensi.jam_pulang')))
                                 <p>Jika pekerjaan telah selesai silahkan check-out</p>
                                 <form action="{{ route('kehadiran.check-out', ['kehadiran' => $present]) }}" method="post">
                                     @csrf @method('patch')
@@ -53,7 +53,7 @@
                 @endif
             @else
                 <div class="text-center">
-                    @if (strtotime(date('H:i:s')) >= strtotime('07:00:00') && strtotime(date('H:i:s')) <= strtotime('17:00:00'))
+                    @if (strtotime(date('H:i:s')) >= strtotime(config('absensi.jam_masuk') . ' -1 hours') && strtotime(date('H:i:s')) <= strtotime(config('absensi.jam_pulang')))
                         <p>Silahkan Check-in</p>
                         <form action="{{ route('kehadiran.check-in') }}" method="post">
                             @csrf

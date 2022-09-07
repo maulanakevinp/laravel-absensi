@@ -100,7 +100,7 @@ Detail User - {{ config('app.name') }}
                         <a href="{{ route('users.index') }}" class="btn btn-sm btn-secondary float-right">Kembali</a>
                     </div>
                     <div class="card-body">
-                        <img src="{{ Storage::url($user->foto) }}" class="card-img mb-3" alt="{{ $user->foto }}">
+                        <img src="{{ asset(Storage::url($user->foto)) }}" class="card-img mb-3" alt="{{ $user->foto }}">
                         <div class="table-responsive">
                             <table class="table table-sm">
                                 <tbody>
@@ -188,8 +188,8 @@ Detail User - {{ config('app.name') }}
                                                     <td>
                                                         @if (strtotime($present->jam_keluar) <= strtotime($present->jam_masuk))
                                                             {{ 21 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
-                                                        @else 
-                                                            @if (strtotime($present->jam_keluar) >= strtotime('19:00:00'))
+                                                        @else
+                                                            @if (strtotime($present->jam_keluar) >= strtotime(config('absensi.jam_pulang') . ' +2 hours'))
                                                                 {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 3 }}
                                                             @else
                                                                 {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 1 }}
@@ -218,7 +218,7 @@ Detail User - {{ config('app.name') }}
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="kehadiran" tabindex="-1" role="dialog" aria-labelledby="kehadiranLabel" aria-hidden="true">

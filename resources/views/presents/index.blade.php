@@ -139,14 +139,14 @@ Kehadiran - {{ config('app.name') }}
                                             <td>{{ date('H:i:s', strtotime($present->jam_masuk)) }}</td>
                                         @else
                                             <td>-</td>
-                                        @endif
+                                        @endif  
                                         @if($present->jam_keluar)
                                             <td>{{ date('H:i:s', strtotime($present->jam_keluar)) }}</td>
                                             <td>
                                                 @if (strtotime($present->jam_keluar) <= strtotime($present->jam_masuk))
                                                     {{ 21 - (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) }}
-                                                @else 
-                                                    @if (strtotime($present->jam_keluar) >= strtotime('19:00:00'))
+                                                @else
+                                                    @if (strtotime($present->jam_keluar) >= strtotime(config('absensi.jam_pulang') . ' +2 hours'))
                                                         {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 3 }}
                                                     @else
                                                         {{ (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse($present->jam_keluar))) - 1 }}
@@ -158,10 +158,10 @@ Kehadiran - {{ config('app.name') }}
                                             <td>-</td>
                                         @endif
                                     </tr>
-                                @endforeach 
+                                @endforeach
                             @endif
                         </tbody>
-                    </table>                    
+                    </table>
                 </div>
             </div>
         </div>

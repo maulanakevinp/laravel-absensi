@@ -91,7 +91,7 @@
                             <span class="nav-link-inner--text">Profile</span>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link nav-link-icon" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="ni ni-user-run"></i>
@@ -159,9 +159,9 @@
         <footer class="py-5">
             <div class="container">
                 <div class="copyright text-center">
-                    © {{ date('Y')}} <a href="https://grhayasa.com/" class="font-weight-bold ml-1" target="_blank">PT.
-                        Grhayasa Nusacitra Estima</a> Theme By <a href="https://www.creative-tim.com"
-                        class="font-weight-bold ml-1" target="_blank">Creative Tim</a>
+                    © {{ date('Y')}} Developed By <a href="https://maulanakevinp.github.io/" class="font-weight-bold ml-1"
+                                target="_lank">Kevin</a> Theme By <a href="https://www.creative-tim.com"
+                                class="font-weight-bold ml-1" target="_blank">Creative Tim</a>
                 </div>
             </div>
         </footer>
@@ -182,7 +182,7 @@
 
     </script>
     <script src="{{ asset('js/myscript.js') }}"></script>
-    
+
 </body>
 
 </html>

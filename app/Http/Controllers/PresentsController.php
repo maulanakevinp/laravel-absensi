@@ -18,7 +18,7 @@ class PresentsController extends Controller
      */
     public function index()
     {
-        $presents = Present::whereTanggal(date('Y-m-d'))->orderBy('jam_masuk')->paginate(6);
+        $presents = Present::whereTanggal(date('Y-m-d'))->orderBy('jam_masuk','desc')->paginate(6);
         $masuk = Present::whereTanggal(date('Y-m-d'))->whereKeterangan('masuk')->count();
         $telat = Present::whereTanggal(date('Y-m-d'))->whereKeterangan('telat')->count();
         $cuti = Present::whereTanggal(date('Y-m-d'))->whereKeterangan('cuti')->count();
@@ -32,7 +32,7 @@ class PresentsController extends Controller
         $request->validate([
             'tanggal' => ['required']
         ]);
-        $presents = Present::whereTanggal($request->tanggal)->orderBy('jam_masuk')->paginate(6);
+        $presents = Present::whereTanggal($request->tanggal)->orderBy('jam_masuk','desc')->paginate(6);
         $masuk = Present::whereTanggal($request->tanggal)->whereKeterangan('masuk')->count();
         $telat = Present::whereTanggal($request->tanggal)->whereKeterangan('telat')->count();
         $cuti = Present::whereTanggal($request->tanggal)->whereKeterangan('cuti')->count();
@@ -55,7 +55,7 @@ class PresentsController extends Controller
         $kehadiran = Present::whereUserId($user->id)->whereMonth('tanggal',$data[1])->whereYear('tanggal',$data[0])->whereKeterangan('telat')->get();
         $totalJamTelat = 0;
         foreach ($kehadiran as $present) {
-            $totalJamTelat = $totalJamTelat + (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse('07:00:00')));
+            $totalJamTelat = $totalJamTelat + (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse(config('absensi.jam_masuk') .' -1 hours')));
         }
         $url = 'https://kalenderindonesia.com/api/YZ35u6a7sFWN/libur/masehi/'.date('Y/m');
         $kalender = file_get_contents($url);
@@ -93,22 +93,18 @@ class PresentsController extends Controller
     public function checkIn(Request $request)
     {
         $users = User::all();
-        $alpha = false;
+        $data['jam_masuk']  = date('H:i:s');
+        $data['tanggal']    = date('Y-m-d');
+        $data['user_id']    = $request->user_id;
 
         if (date('l') == 'Saturday' || date('l') == 'Sunday') {
             return redirect()->back()->with('error','Hari Libur Tidak bisa Check In');
         }
 
         foreach ($users as $user) {
-            $absen = Present::whereUserId($user->id)->whereTanggal(date('Y-m-d'))->first();
+            $absen = Present::whereUserId($user->id)->whereTanggal($data['tanggal'])->first();
             if (!$absen) {
-                $alpha = true;
-            }
-        }
-
-        if ($alpha) {
-            foreach ($users as $user) {
-                if ($user->id != $request->user_id) {
+                if ($user->id != $data['user_id']) {
                     Present::create([
                         'keterangan'    => 'Alpha',
                         'tanggal'       => date('Y-m-d'),
@@ -118,35 +114,22 @@ class PresentsController extends Controller
             }
         }
 
-        $present = Present::whereUserId($request->user_id)->whereTanggal(date('Y-m-d'))->first();
+        if (strtotime($data['jam_masuk']) >= strtotime(config('absensi.jam_masuk') .' -1 hours') && strtotime($data['jam_masuk']) <= strtotime(config('absensi.jam_masuk'))) {
+            $data['keterangan'] = 'Masuk';
+        } else if (strtotime($data['jam_masuk']) > strtotime(config('absensi.jam_masuk')) && strtotime($data['jam_masuk']) <= strtotime(config('absensi.jam_pulang'))) {
+            $data['keterangan'] = 'Telat';
+        } else {
+            $data['keterangan'] = 'Alpha';
+        }
+
+        $present = Present::whereUserId($data['user_id'])->whereTanggal($data['tanggal'])->first();
         if ($present) {
             if ($present->keterangan == 'Alpha') {
-                $data['jam_masuk']  = date('H:i:s');
-                $data['tanggal']    = date('Y-m-d');
-                $data['user_id']    = $request->user_id;
-                if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
-                    $data['keterangan'] = 'Masuk';
-                } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
-                    $data['keterangan'] = 'Telat';
-                } else {
-                    $data['keterangan'] = 'Alpha';
-                }
                 $present->update($data);
                 return redirect()->back()->with('success','Check-in berhasil');
             } else {
                 return redirect()->back()->with('error','Check-in gagal');
             }
-        }
-
-        $data['jam_masuk']  = date('H:i:s');
-        $data['tanggal']    = date('Y-m-d');
-        $data['user_id']    = $request->user_id;
-        if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
-            $data['keterangan'] = 'Masuk';
-        } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
-            $data['keterangan'] = 'Telat';
-        } else {
-            $data['keterangan'] = 'Alpha';
         }
 
         Present::create($data);
@@ -179,9 +162,9 @@ class PresentsController extends Controller
         $data['tanggal'] = date('Y-m-d');
         if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
             $data['jam_masuk'] = $request->jam_masuk;
-            if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
+            if (strtotime($data['jam_masuk']) >= strtotime(config('absensi.jam_masuk') .' -1 hours') && strtotime($data['jam_masuk']) <= strtotime(config('absensi.jam_masuk'))) {
                 $data['keterangan'] = 'Masuk';
-            } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
+            } else if (strtotime($data['jam_masuk']) > strtotime(config('absensi.jam_masuk')) && strtotime($data['jam_masuk']) <= strtotime(config('absensi.jam_pulang'))) {
                 $data['keterangan'] = 'Telat';
             } else {
                 $data['keterangan'] = 'Alpha';
@@ -231,9 +214,9 @@ class PresentsController extends Controller
 
         if ($request->keterangan == 'Masuk' || $request->keterangan == 'Telat') {
             $data['jam_masuk'] = $request->jam_masuk;
-            if (strtotime($data['jam_masuk']) >= strtotime('07:00:00') && strtotime($data['jam_masuk']) <= strtotime('08:00:00')) {
+            if (strtotime($data['jam_masuk']) >= strtotime(config('absensi.jam_masuk') .' -1 hours') && strtotime($data['jam_masuk']) <= strtotime(config('absensi.jam_masuk'))) {
                 $data['keterangan'] = 'Masuk';
-            } else if (strtotime($data['jam_masuk']) > strtotime('08:00:00') && strtotime($data['jam_masuk']) <= strtotime('17:00:00')) {
+            } else if (strtotime($data['jam_masuk']) > strtotime(config('absensi.jam_masuk')) && strtotime($data['jam_masuk']) <= strtotime(config('absensi.jam_pulang'))) {
                 $data['keterangan'] = 'Telat';
             } else {
                 $data['keterangan'] = 'Alpha';

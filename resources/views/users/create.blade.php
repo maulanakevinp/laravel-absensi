@@ -15,7 +15,7 @@ Tambah User - {{ config('app.name') }}
                     <form action=" {{ route('users.store') }} " method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="text-center mb-3">
-                            <img id="image" src="{{ Storage::url('default.jpg') }}" alt="{{ Storage::url('default.jpg') }}" class="img-thumbnail mb-1">
+                            <img id="image" src="{{ asset(Storage::url('default.jpg')) }}" alt="{{ asset(Storage::url('default.jpg')) }}" class="img-thumbnail mb-1">
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-2"><label for="foto" class="float-right col-form-label">Foto</label></div>

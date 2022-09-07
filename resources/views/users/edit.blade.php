@@ -16,7 +16,7 @@ Ubah User - {{ config('app.name') }}
                         @method('patch')
                         @csrf
                         <div class="text-center mb-3">
-                            <img id="image" src="{{ Storage::url($user->foto ) }}" alt="{{ $user->foto }}" class="img-thumbnail mb-1">
+                            <img id="image" src="{{ asset(Storage::url($user->foto)) }}" alt="{{ $user->foto }}" class="img-thumbnail mb-1">
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-2"><label for="foto" class="float-right col-form-label">Foto</label></div>
