@@ -60,19 +60,25 @@ Users Management - {{ config('app.name') }}
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
+                            @if (!$users->count())
                                 <tr>
-                                    <th>{{ $rank++ }}</th>
-                                    <td>{{ $user->nrp }}</td>
-                                    <td>{{ $user->nama }}</td>
-                                    <td>{{ $user->role->role }}</td>
-                                    <td>
-                                        <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info" title="Detail User"><i class="fas fa-eye"></i></a>
-                                    </td>
+                                    <td colspan="5" class="text-center">Tidak ada data yang tersedia</td>
                                 </tr>
-                            @endforeach 
+                            @else
+                                @foreach ($users as $user)
+                                    <tr>
+                                        <th>{{ $rank++ }}</th>
+                                        <td>{{ $user->nrp }}</td>
+                                        <td>{{ $user->nama }}</td>
+                                        <td>{{ $user->role->role }}</td>
+                                        <td>
+                                            <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-info" title="Detail User"><i class="fas fa-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
-                    </table>                    
+                    </table>
                 </div>
             </div>
         </div>
