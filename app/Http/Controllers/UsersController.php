@@ -230,7 +230,9 @@ class UsersController extends Controller
         $users = User::where('nama','like','%'.$request->cari.'%')
                     ->orWhere('nrp','like','%'.$request->cari.'%')
                     ->paginate(6);
-        return view('users.index', compact('users'));
+        $rank = $users->firstItem();
+
+        return view('users.index', compact('users','rank'));
     }
 
     public function password(Request $request, User $user)
