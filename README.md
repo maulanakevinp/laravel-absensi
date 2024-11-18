@@ -46,6 +46,7 @@ php artisan key:generate
 ```
 - Buka file .env
 - Ubah konfigurasi database sesuai nama database yang anda buat tadi lalu simpan
+- Ubah konfigurasi API_KEY sesuai <a href="kalenderindonesia.com">kalenderindonesia.com</a>
 - lakukan migrate ketik :
 ```terminal
 php artisan migrate:refresh --seed
