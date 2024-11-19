@@ -79,14 +79,14 @@ class UsersController extends Controller
         foreach ($kehadiran as $present) {
             $totalJamTelat = $totalJamTelat + (\Carbon\Carbon::parse($present->jam_masuk)->diffInHours(\Carbon\Carbon::parse(config('absensi.jam_masuk'))));
         }
-        $url = 'https://kalenderindonesia.com/api/YZ35u6a7sFWN/libur/masehi/'.date('Y/m');
+        $url = 'https://kalenderindonesia.com/api/'.config('absensi.api_key').'/libur/masehi/'.date('Y/m');
         $kalender = file_get_contents($url);
         $kalender = json_decode($kalender, true);
         $libur = false;
         $holiday = null;
         if ($kalender['data'] != false) {
-            if ($kalender['data']['holiday']['data']) {
-                foreach ($kalender['data']['holiday']['data'] as $key => $value) {
+            if ($kalender['data']['holidays']['data']) {
+                foreach ($kalender['data']['holidays']['data'] as $key => $value) {
                     if ($value['date'] == date('Y-m-d')) {
                         $holiday = $value['name'];
                         $libur = true;
