@@ -31,10 +31,10 @@ class HomeController extends Controller
         $libur = false;
         $holiday = null;
         if ($kalender['data'] != false) {
-            if ($kalender['data']['holidays']['data']) {
-                foreach ($kalender['data']['holidays']['data'] as $key => $value) {
-                    if ($value['date'] == date('Y-m-d')) {
-                        $holiday = $value['name'];
+            if ($kalender['data']['holidays']) {
+                foreach ($kalender['data']['holidays'] as $key => $value) {
+                    if ($value['masehi'] == date('Y-m-d')) {
+                        $holiday = $value['holiday']['name'];
                         $libur = true;
                         break;
                     }
